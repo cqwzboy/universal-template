@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://code.alibabatech.com/schema/dubbo 
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <bean
+        id="dataSource"
+        class="com.alibaba.druid.pool.DruidDataSource"
+        p:url="${db.url}"
+        p:username="${db.username}"
+        p:password="${db.password}"
+        p:removeAbandoned="true"
+        p:removeAbandonedTimeout="1800"
+        p:logAbandoned="true"
+        p:proxyFilters-ref="druidFilters" />
+
+    <util:list id="mybatisMapperLocations">
+        <value>classpath*:mybatis-mapper/*.xml</value>
+    </util:list>
+
+    <util:list id="mybatisPlugins">
+        <bean class="com.github.pagehelper.PageInterceptor">
+            <property name="properties">
+                <value>
+                    helperDialect=mysql
+                    rowBoundsWithCount=true
+                </value>
+            </property>
+        </bean>
+    </util:list>
+
+    <!--动态数据源配置 -->
+    <bean
+        id="sqlSessionFactory"
+        class="org.mybatis.spring.SqlSessionFactoryBean"
+        p:typeAliasesPackage="com.taojin.report.service.entity"
+        p:mapperLocations-ref="mybatisMapperLocations"
+        p:dataSource-ref="dataSource"
+        p:plugins-ref="mybatisPlugins" />
+
+    <bean
+        class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+        p:basePackage="com.taojin.report.dao.api"
+        p:sqlSessionFactoryBeanName="sqlSessionFactory" />
+
+    <bean
+        id="sqlSessionTemplate"
+        class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg
+            index="0"
+            ref="sqlSessionFactory" />
+    </bean>
+
+    <!-- 事务注解驱动 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!--动态数据源 -->
+    <bean
+        id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+        p:dataSource-ref="dataSource" />
+
+    <bean
+        id="transactionTemplate"
+        class="org.springframework.transaction.support.TransactionTemplate"
+        p:transactionManager-ref="transactionManager"
+        p:isolationLevelName="ISOLATION_READ_COMMITTED" />
+
+    <bean
+        id="druidFilters"
+        class="org.budo.druid.filter.factory.DefaultDruidFiltersFactoryBean" />
+</beans>

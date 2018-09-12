@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://code.alibabatech.com/schema/dubbo 
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <import resource="budo-graph.xml" />
+
+    <import resource="dubbo-consumer.xml" />
+
+    <import resource="dubbo-provider.xml" />
+
+    <import resource="spring-mvc.xml" />
+
+    <import resource="spring-dao.xml" />
+
+    <import resource="spring-aop.xml" />
+
+    <context:component-scan base-package="com.taojin.report.web.impl" />
+
+    <context:component-scan base-package="com.taojin.report.service.impl" />
+
+    <bean
+        class="org.budo.config.client.spring.BudoConfigPropertySourcesPlaceholderConfigurer"
+        p:budoConfigClient-ref="budoConfigClient" />
+
+    <bean
+        id="budoConfigClient"
+        class="org.budo.config.client.BudoConfigClient"
+        p:serverUrl="http://taojin-config-host"
+        p:artifactKey="taojin-report-web-launcher"
+        p:secretKey="file:/taojin-conf/taojin-report-web-launcher-conf-secret.txt"
+        p:whenError="warn"
+        p:cacheFile="/taojin-conf/taojin-report-web-launcher-cache.properties" />
+</beans>

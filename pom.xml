@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.taojin</groupId>
+    <artifactId>taojin-report</artifactId>
+    <packaging>pom</packaging>
+    <version>0.1-SNAPSHOT</version>
+
+    <modules>
+        <module>taojin-report-service-api</module>
+        <module>taojin-report-service-entity</module>
+        <module>taojin-report-service-impl</module>
+        <module>taojin-report-web-api</module>
+        <module>taojin-report-web-controller</module>
+        <module>taojin-report-web-impl</module>
+        <module>taojin-report-web-launcher</module>
+    </modules>
+</project>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://code.alibabatech.com/schema/dubbo 
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:reference
+        id="registryService"
+        interface="com.alibaba.dubbo.registry.RegistryService" />
+
+    <dubbo:service
+        interface="org.budo.graph.service.BudoGraphService"
+        ref="budoGraphService" />
+
+    <bean class="org.budo.support.spring.context.aware.BudoApplicationContextAware" />
+
+    <bean
+        id="budoGraphService"
+        class="org.budo.graph.service.impl.BudoGraphServiceImpl"
+        p:jedisPool-ref="graphJedisPool" />
+
+    <bean
+        id="graphJedisPool"
+        class="org.budo.jedis.pool.factory.BudoJedisPoolFactory"
+        p:host="${budo.graph.redis.ip}"
+        p:password="${budo.graph.redis.password}" /> <!-- 用于存储监控数据的Redis -->
+</beans>
